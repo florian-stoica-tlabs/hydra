@@ -129,7 +129,7 @@ RUN apt-get -y update \
     && rm -rf /usr/share/man/ \
     && rm -rf /usr/share/locale/
 RUN mv /bin/docker-entrypoint.sh /bin/hasura-entrypoint.sh
-ADD packages/hydra-indexer-gateway/metadata /hasura-metadata/
+ADD packages/hydra-indexer-gateway/substrate-metadata /hasura-metadata/
 ADD packages/hydra-indexer-gateway/docker-entrypoint.sh .
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 EXPOSE 8080
