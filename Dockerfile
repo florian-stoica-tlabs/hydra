@@ -48,6 +48,18 @@ RUN npm install --production
 COPY --from=indexer-build /hydra/packages/hydra-indexer/lib lib/
 CMD ["node", "./lib/run.js", "index"]
 
+FROM node AS indexer-evm
+WORKDIR /hydra-indexer
+COPY --from=common-build  /hydra/packages/hydra-common/package.tgz /hydra-common.tgz
+COPY --from=indexer-build /hydra/packages/hydra-indexer/package.json .
+ADD scripts/patch-deps.js /patch-deps.js
+RUN node /patch-deps.js
+ENV NODE_ENV production
+RUN npm install --production
+COPY --from=indexer-build /hydra/packages/hydra-indexer/lib lib/
+COPY --from=indexer-build /hydra/packages/hydra-indexer/lib/migrations/evm lib/migrations/v4
+CMD ["node", "./lib/run.js", "index"]
+
 
 FROM base AS indexer-status-service-builder
 WORKDIR /hydra/packages/hydra-indexer-status-service

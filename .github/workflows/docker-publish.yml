@@ -41,6 +41,12 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.event.inputs.releaseTag }}
 
+      - name: Publish hydra-evm-indexer image
+        if: "contains(github.event.inputs.packages, 'hydra-indexer') || github.event.inputs.packages == '*'"
+        run: ./scripts/docker-publish.sh hydra-indexer-evm
+        env:
+          RELEASE_TAG: ${{ github.event.inputs.releaseTag }}
+
       - name: "Publish hydra-indexer-status-service image"
         if: "contains(github.event.inputs.packages, 'hydra-indexer-status-service') || github.event.inputs.packages == '*'"
         run: ./scripts/docker-publish.sh hydra-indexer-status-service
