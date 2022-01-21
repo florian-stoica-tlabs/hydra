@@ -6,6 +6,10 @@ export class StoreEvmHash1641997527150 implements MigrationInterface {
       `ALTER TABLE "substrate_event" ADD COLUMN IF NOT EXISTS "evm_hash"  TEXT`
     )
 
+    await queryRunner.query(
+      `CREATE INDEX "IDX_4a20ca111e8c18f50db7bda3d6" ON "substrate_event" ("evm_hash") `
+    )
+
     await queryRunner.query(`
             CREATE OR REPLACE FUNCTION evm_hash_insert_trigger_fnc()
                 RETURNS trigger AS
@@ -46,6 +50,8 @@ export class StoreEvmHash1641997527150 implements MigrationInterface {
     )
 
     await queryRunner.query(`DROP FUNCTION evm_hash_insert_trigger_fnc();`)
+
+    await queryRunner.query(`DROP INDEX "IDX_4a20ca111e8c18f50db7bda3d6"`)
 
     await queryRunner.query(
       `ALTER TABLE "substrate_event" DROP COLUMN IF EXISTS "evm_hash"`
