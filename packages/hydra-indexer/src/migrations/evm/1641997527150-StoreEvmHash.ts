@@ -1,13 +1,12 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class StoreEvmHash1641997527150 implements MigrationInterface {
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(
-            `ALTER TABLE "substrate_event" ADD COLUMN IF NOT EXISTS "evm_hash"  TEXT`
-        )
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE "substrate_event" ADD COLUMN IF NOT EXISTS "evm_hash"  TEXT`
+    )
 
-
-        await queryRunner.query(`
+    await queryRunner.query(`
             CREATE OR REPLACE FUNCTION evm_hash_insert_trigger_fnc()
                 RETURNS trigger AS
             
@@ -38,23 +37,18 @@ export class StoreEvmHash1641997527150 implements MigrationInterface {
             EXECUTE PROCEDURE evm_hash_insert_trigger_fnc();
         `)
 
-        await queryRunner.query(
-            `UPDATE substrate_event SET name=name;`
-        )
-    }
+    await queryRunner.query(`UPDATE substrate_event SET name=name;`)
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(
-            `DROP TRIGGER evm_hash_insert_trigger_fnc ON substrate_event;`
-        )
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `DROP TRIGGER evm_hash_insert_trigger_fnc ON substrate_event;`
+    )
 
-        await queryRunner.query(
-            `DROP FUNCTION evm_hash_insert_trigger_fnc();`
-        )
+    await queryRunner.query(`DROP FUNCTION evm_hash_insert_trigger_fnc();`)
 
-        await queryRunner.query(
-            `ALTER TABLE "substrate_event" DROP COLUMN IF EXISTS "evm_hash"`
-        )
-
-    }
+    await queryRunner.query(
+      `ALTER TABLE "substrate_event" DROP COLUMN IF EXISTS "evm_hash"`
+    )
+  }
 }
